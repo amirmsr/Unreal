@@ -1,7 +1,7 @@
 import { IonContent, IonHeader, IonLabel, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { getMessagesBetweenUsers, getUserById } from '../userService';
+import { getAllMessagesBetweenUsers, getUserById, listenToNewMessagesBetweenUsers } from '../userService';
 import { useAuth } from '../AuthContext';
 
 
@@ -11,8 +11,7 @@ interface User {
     username?: string;
     age?: number;
     role?: boolean;
-  }
-
+}
 
 const Messages : React.FC = () => {
     const { user } = useAuth();
@@ -28,22 +27,29 @@ const Messages : React.FC = () => {
         fetchUser();
     }, [id]);
 
+
     useEffect(() => {
         const fetchMessages = async () => {
           if (userExt && user) {
             try {
-              console.log('hr')  
-              console.log(user?.uid, userExt?.id )
-              const messagesList = await getMessagesBetweenUsers(user?.uid, userExt.id);
-              setMessages(messagesList);
+              // Charger tous les messages existants
+              const initialMessages = await getAllMessagesBetweenUsers(user.uid, userExt.id);
+              setMessages(initialMessages);
+              
+              // Écouter les nouveaux messages en temps réel
+              const unsubscribe = listenToNewMessagesBetweenUsers(user.uid, userExt.id, (newMessage) => {
+                setMessages((prevMessages) => [...prevMessages, newMessage]);
+              });
+    
+              // Nettoyer l'écouteur lorsque le composant est démonté
+              return () => unsubscribe();
             } catch (error) {
               console.error('Error fetching messages:', error);
             }
           }
         };
         fetchMessages();
-
-    }, [user, userExt]);
+      }, [user, userExt]);
 
 
     return (
@@ -58,7 +64,7 @@ const Messages : React.FC = () => {
             {messages.length > 0 ? (
                 <ul>
                 {messages.map((message) => (
-                    <li key={message.id}>{message.content}</li>
+                    <li key={message.id}>{message.content} </li>
                 ))}
                 </ul>
             ) : (

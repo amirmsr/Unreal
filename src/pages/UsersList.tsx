@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonButton, IonIcon, IonCheckbox, IonInput } from '@ionic/react';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonButton, IonIcon, IonCheckbox, IonInput, IonText, IonCard } from '@ionic/react';
 import { deleteUser, getUsers, sendMessage } from '../userService';
 import { useAuth } from '../AuthContext';
-import { trash } from 'ionicons/icons';
+import { chatbubbles, mailOutline, trash } from 'ionicons/icons';
 import { useHistory } from 'react-router';
 
 interface User {
@@ -69,6 +69,7 @@ const UsersList: React.FC = () => {
 
 
   
+  
 
 
 
@@ -91,6 +92,11 @@ const UsersList: React.FC = () => {
                 slot="start"
                 onIonChange={(e) => handleCheckboxChange(user.id, e.detail.checked)}
                 />
+                <IonIcon
+                    slot="end"
+                    icon={chatbubbles} 
+                    onClick={() => handleUserMessage(user.id)}
+                />
               <IonLabel onClick={()=>handleUserMessage(user.id)}>
                 <h2>{user.username}</h2>
                 <p>Email: {user.email}</p>
@@ -111,6 +117,23 @@ const UsersList: React.FC = () => {
                 <IonButton onClick={()=> handleSendMessage(content, userData.uid, receiverIds)} expand="block">
                             Send Message
                 </IonButton>
+                &nbsp;
+                <IonText style={{ display: 'block', textAlign: 'center' }}>Or</IonText>
+                <IonCard>
+                  <IonItem>
+                    <input
+                      type="file"
+                      style={{ display: "none" }}
+                    />
+                    <IonInput
+                      placeholder="File title"
+                    />
+                    <IonButton>
+                    <IonLabel>Upload</IonLabel>
+                    <IonIcon slot="start" />
+                    </IonButton>
+                  </IonItem>
+                </IonCard>
             </IonLabel>
         )}
       </IonContent>

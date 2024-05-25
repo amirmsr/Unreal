@@ -1,5 +1,5 @@
 import { firestore } from './firebase-config';
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 
 export async function getUsers() {
   const usersCollection = collection(firestore, 'users');
@@ -51,29 +51,43 @@ export async function sendMessage(content: string, senderId: string, receiverIds
     }
 }
 
-export async function getMessagesBetweenUsers(senderId: string, receiverId: string) {
-  try {
-    const messagesCollection = collection(firestore, 'messages');
-    
-    // Query to get messages where the senderId matches and receiverIds contains the receiverId
-    const messagesQuery = query(
-      messagesCollection,
-      where('senderId', '==', senderId),
-      where('receiverIds', 'array-contains', receiverId)
-    );
-    
-    const messagesSnapshot = await getDocs(messagesQuery);
-    const messagesList = messagesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    console.log(messagesSnapshot)
-    console.log(messagesList)
-    console.log(senderId,receiverId)
 
-    
-    return messagesList;
-  } catch (error) {
-    console.error('Error getting messages between users:', error);
-    throw error;
-  }
+export async function getAllMessagesBetweenUsers(userId1: string, userId2: string) {
+  const messagesCollection = collection(firestore, 'messages');
+  
+  const messagesQuery = query(
+    messagesCollection,
+    where('senderId', '==', userId1),
+    where('receiverIds', 'array-contains', userId2)
+
+
+  );
+  
+  const messagesSnapshot = await getDocs(messagesQuery);
+  const messagesList = messagesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  console.log(messagesList)
+  return messagesList;
+}
+
+// Fonction pour écouter les nouveaux messages entre deux utilisateurs
+export function listenToNewMessagesBetweenUsers(userId1: string, userId2: string, callback: (message: any) => void) {
+  const messagesCollection = collection(firestore, 'messages');
+  
+  const messagesQuery = query(
+    messagesCollection,
+    where('senderId', '==', userId2),
+    where('receiverIds', 'array-contains', userId1)
+
+  );
+  
+  return onSnapshot(messagesQuery, (snapshot) => {
+    snapshot.docChanges().forEach((change) => {
+      if (change.type === 'added') {
+        const newMessage = { id: change.doc.id, ...change.doc.data() };
+        callback(newMessage);
+      }
+    });
+  });
 }
 
 
