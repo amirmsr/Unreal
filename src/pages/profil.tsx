@@ -1,26 +1,26 @@
 import React from 'react';
 
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButton } from '@ionic/react';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonMenuButton, useIonRouter } from '@ionic/react';
 import { useAuth } from '../AuthContext';
 import { logoutUser } from '../firebase-config';
 import { useHistory } from 'react-router-dom';
 
 
-const Profile: React.FC = () => {
+const Profil: React.FC = () => { 
   const { user, userData } = useAuth();
   const history = useHistory();
-
   const handleLogout = async () => {
     await logoutUser();
     history.push('/login');
   };
+  
   
 
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Profile</IonTitle>
+          <IonTitle>Profil</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
@@ -39,4 +39,4 @@ const Profile: React.FC = () => {
   );
 };
 
-export default Profile;
+export default Profil;

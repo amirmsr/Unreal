@@ -1,23 +1,24 @@
-import { IonButton, IonContent, IonHeader, IonInput, IonLoading, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonContent, IonHeader, IonInput, IonLoading, IonPage, IonTitle, IonToolbar, useIonRouter } from '@ionic/react';
 import React, { useState } from 'react';
 import { loginUser } from '../firebase-config';
 import ToastComponent from '../toast';
 import { useHistory } from 'react-router-dom';
 
 const Login: React.FC = () => {
+    const navigation = useIonRouter();
     const[mail, setMail] = useState('')
     const[password, setPassword] = useState('')
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
     const [busy, setBusy] = useState<Boolean>(false)
-    const history = useHistory();
+
 
     async function login() {
         setBusy(true)
         const res = await loginUser(mail, password);
         if (res !== false) {
           setToastMessage('Login successful');
-          history.push('/profil');
+          navigation.push('/profil', 'back', 'replace')
         } else {
           setToastMessage('Login failed');
         }
