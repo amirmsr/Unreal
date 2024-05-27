@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonButton, IonIcon, IonCheckbox, IonInput, IonText, IonCard, IonMenuButton } from '@ionic/react';
-import { deleteUser, getUsers, sendMessage } from '../userService';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonButton, IonIcon, IonCheckbox, IonInput, IonText, IonCard, IonMenuButton, IonButtons } from '@ionic/react';
+import { deleteUser, getAllMessagesBetweenUsers, getUsers, sendMessage } from '../userService';
 import { useAuth } from '../AuthContext';
 import { chatbubbles, mailOutline, notifications, trash } from 'ionicons/icons';
 import { useHistory } from 'react-router';
@@ -20,6 +20,7 @@ const UsersList: React.FC = () => {
   const[content, setContent] = useState('')
   const [receiverIds, setReceiverIds] = useState<string[]>([]);
   const history = useHistory();
+  const [messageNotif, setMessageNotif] = useState(true)
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -31,6 +32,9 @@ const UsersList: React.FC = () => {
     fetchUsers();
   }, []);
 
+
+
+  
   const handleDelete = async (userId: string) => {
     if (userData?.role) { 
       try {
@@ -53,6 +57,8 @@ const UsersList: React.FC = () => {
       console.error("Error sending message:", error);
     }
   };
+
+
 
   const handleCheckboxChange = (userId: string, checked: boolean) => {
     setReceiverIds(prevReceiverIds => {
@@ -80,68 +86,55 @@ const UsersList: React.FC = () => {
 
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonButton slot='start'>
-            <IonMenuButton></IonMenuButton>
-          </IonButton>
-          <IonTitle>Users</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent className="ion-padding">
-        <IonList>
-          {users.map(user => (
-            <IonItem key={user.id}>
-                <IonCheckbox
-                slot="start"
-                onIonChange={(e) => handleCheckboxChange(user.id, e.detail.checked)}
-                />
-                <IonIcon
-                    slot="end"
-                    icon={chatbubbles} 
-                    onClick={() => handleUserMessage(user.id)}
-                />
-              <IonLabel onClick={()=>handleUserMessage(user.id)}>
-                <h2>{user.username}</h2>
-                <p>Email: {user.email}</p>
-                {user.age && <p>Age: {user.age}</p>}
-                <p>role: {user.role ? 'admin' : 'user'}</p>
-              </IonLabel>
-              {userData?.role && (
-                <IonButton slot="end" color="danger" onClick={() => handleDelete(user.id)}>
-                  <IonIcon icon={trash} />
-                </IonButton>
-              )}
-            </IonItem>
-          ))}
-        </IonList>
-        {receiverIds.length > 0 && (
-            <IonLabel>
-                <IonInput placeholder='Your message'  onIonChange={(e:any)=> setContent(e.target.value)} onIonBlur={(e: any) => setContent(e.target.value)} ></IonInput>
-                <IonButton onClick={()=> handleSendMessage(content, userData.uid, receiverIds)} expand="block">
-                            Send Message
-                </IonButton>
-                &nbsp;
-                <IonText style={{ display: 'block', textAlign: 'center' }}>Or</IonText>
-                <IonCard>
-                  <IonItem>
-                    <input
-                      type="file"
-                      style={{ display: "none" }}
-                    />
-                    <IonInput
-                      placeholder="File title"
-                    />
-                    <IonButton>
-                    <IonLabel>Upload</IonLabel>
-                    <IonIcon slot="start" />
-                    </IonButton>
-                  </IonItem>
-                </IonCard>
+    <IonHeader>
+      <IonToolbar color="primary">
+        <IonButtons slot='start'>
+          <IonMenuButton></IonMenuButton>
+        </IonButtons>
+        <IonTitle>Users</IonTitle>
+      </IonToolbar>
+    </IonHeader>
+    <IonContent className="ion-padding">
+      <IonList>
+        {users.map(user => (
+          <IonItem key={user.id} lines="full">
+            <IonLabel onClick={() => handleUserMessage(user.id)} className="user-info">
+              <h2>{user.username}</h2>
+              <p>Email: {user.email}</p>
+              {user.age && <p>Age: {user.age}</p>}
+              <p>Role: {user.role ? 'Admin' : 'User'}</p>
             </IonLabel>
-        )}
-      </IonContent>
-    </IonPage>
+            <IonIcon
+              slot="end"
+              icon={chatbubbles} 
+              onClick={() => handleUserMessage(user.id)}
+              className="icon-button"
+            />
+            <IonCheckbox
+              slot="end"
+              onIonChange={(e) => handleCheckboxChange(user.id, e.detail.checked)}
+              className="checkbox"
+            />
+            {userData?.role && (
+              <IonButton slot="end" color="danger" onClick={() => handleDelete(user.id)} className="delete-button">
+                <IonIcon icon={trash} />
+              </IonButton>
+            )}
+          </IonItem>
+        ))}
+      </IonList>
+      {receiverIds.length > 0 && (
+        <IonLabel className="message-input">
+          <IonInput placeholder='Your message' onIonChange={(e: any) => setContent(e.target.value)} onIonBlur={(e: any) => setContent(e.target.value)}></IonInput>
+          <IonButton onClick={() => handleSendMessage(content, userData.uid, receiverIds)} expand="block">
+            Send Message
+          </IonButton>
+        </IonLabel>
+      )}
+    </IonContent>
+  </IonPage>
+  
+  
   );
 };
 

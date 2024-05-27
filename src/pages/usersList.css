@@ -1,0 +1,24 @@
+.user-info {
+    flex: 1;
+  }
+  
+  .icon-button, .checkbox {
+    font-size: 24px;
+    color: #007bff;
+    margin-left: 8px;
+  }
+  
+  .message-input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .message-input ion-input {
+    margin-bottom: 8px;
+  }
+  
+  .message-input ion-button {
+    width: 100%;
+  }
+  

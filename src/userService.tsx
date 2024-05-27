@@ -66,12 +66,15 @@ export async function sendMessage(content: string, senderId: string, receiverIds
 
 
 
+interface Message {
+  id: string;
+  content: string;
+  date: Timestamp;
+  senderId: string;
+  receiverIds: string[];
+}
 
-
-
-
-
-export async function getAllMessagesBetweenUsers(userId1: string, userId2: string) {
+export async function getAllMessagesBetweenUsers(userId1: string, userId2: string): Promise<Message[]>  {
   const messagesCollection = collection(firestore, 'messages');
   
   const messagesQuery = query(
@@ -79,18 +82,16 @@ export async function getAllMessagesBetweenUsers(userId1: string, userId2: strin
     where('senderId', '==', userId1),
     where('receiverIds', 'array-contains', userId2),
     
-
-
   );
   
   const messagesSnapshot = await getDocs(messagesQuery);
-  const messagesList = messagesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  const messagesList = messagesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Message));
   console.log(messagesList)
   return messagesList;
 }
 
 // Fonction pour écouter les nouveaux messages entre deux utilisateurs
-export function listenToNewMessagesBetweenUsers(userId1: string, userId2: string, callback: (message: any) => void) {
+export function listenToNewMessagesBetweenUsers(userId1: string, userId2: string, callback: (message: Message) => void) {
   const messagesCollection = collection(firestore, 'messages');
   
   const messagesQuery = query(
@@ -103,7 +104,7 @@ export function listenToNewMessagesBetweenUsers(userId1: string, userId2: string
   return onSnapshot(messagesQuery, (snapshot) => {
     snapshot.docChanges().forEach((change) => {
       if (change.type === 'added') {
-        const newMessage = { id: change.doc.id, ...change.doc.data() };
+        const newMessage = { id: change.doc.id, ...change.doc.data() } as Message;
         callback(newMessage);
       }
     });
@@ -111,19 +112,3 @@ export function listenToNewMessagesBetweenUsers(userId1: string, userId2: string
 }
 
 
-
-export async function getUserByMessage(senderId: string) {
-  try {
-    const userDocRef = doc(firestore, 'users', senderId);
-    const userDocSnap = await getDoc(userDocRef);
-
-    if (userDocSnap.exists()) {
-      return { id: userDocSnap.id, ...userDocSnap.data() };
-    } else {
-      throw new Error('User document does not exist');
-    }
-  } catch (error) {
-    console.error('Error fetching user by senderId:', error);
-    return null; 
-  }
-}

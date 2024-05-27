@@ -1,7 +1,7 @@
 import { IonBackButton, IonButton, IonButtons, IonCard, IonContent, IonHeader, IonImg, IonInput, IonItem, IonLabel, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { getAllMessagesBetweenUsers, getUserById, getUserByMessage, listenToNewMessagesBetweenUsers, sendMessage } from '../userService';
+import { getAllMessagesBetweenUsers, getUserById, listenToNewMessagesBetweenUsers, sendMessage } from '../userService';
 import { useAuth } from '../AuthContext';
 import { storage } from '../firebase-config';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
@@ -38,7 +38,10 @@ const Messages : React.FC = () => {
         try {
           // Charger tous les messages existants
           const initialMessages = await getAllMessagesBetweenUsers(user.uid, userExt.id);
+          initialMessages.sort((a, b) => a.date.seconds - b.date.seconds);
           setMessages(initialMessages);
+          console.log(initialMessages)
+          
     
           // Écouter les nouveaux messages en temps réel
           const unsubscribe = listenToNewMessagesBetweenUsers(user.uid, userExt.id, (newMessage) => {
@@ -58,21 +61,6 @@ const Messages : React.FC = () => {
     }, [user, userExt]);
       
 
- /*    const handleSendMessage = async (content: string, senderId: string, receiverIds: string[]) => {
-      try {
-          await sendMessage(content, senderId, receiverIds);
-          alert('Message sent');
-          // Mettre à jour les messages après l'envoi du message
-          fetchMessages()
-      } catch (error) {
-          alert('Error sending message');
-          console.error("Error sending message:", error);
-      }
-    };
-     */
-
-
-    //send image
 
     const trySend = async (content: string, senderId: string, receiverIds: string[], imagesUrl? : string[]) => {
       try {
@@ -130,20 +118,55 @@ const Messages : React.FC = () => {
             </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">
-            <IonLabel>
-                {messages.length > 0 ? (
-                    <ul className="message-list">
-                        {messages.map((message) => (
-                            <li key={message.id} >
-                                {message.content} {message.senderId === user?.uid && 'by you'}
-                                <IonImg style={{width: 100}} src={message.images}> </IonImg>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>No messages found.</p>
-                )}
-            </IonLabel>
+        <IonLabel>
+            {messages.length > 0 ? (
+              <ul className="message-list" style={{ listStyleType: 'none', padding: 0 }}>
+                {messages.map((message) => (
+                  <li
+                    key={message.id}
+                    className={`message-item ${message.senderId === user?.uid ? 'sent' : 'received'}`}
+                    style={{
+                      marginBottom: '10px',
+                      display: 'flex',
+                      flexDirection: message.senderId === user?.uid ? 'row-reverse' : 'row',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <div
+                      className="message-content"
+                      style={{
+                        maxWidth: '70%',
+                        padding: '10px',
+                        borderRadius: '10px',
+                        backgroundColor: message.senderId === user?.uid ? '#dcf8c6' : '#fff',
+                        border: message.senderId === user?.uid ? '1px solid #dcf8c6' : '1px solid #ccc',
+                        color: message.senderId === user?.uid ? '#000' : '#333',
+                        textAlign: message.senderId === user?.uid ? 'right' : 'left',
+                      }}
+                    >
+                      {message.content}
+                    </div>
+                    {message.images && (
+                      <IonImg
+                        style={{
+                          width: 100,
+                          height: 100,
+                          borderRadius: '10px',
+                          marginLeft: message.senderId === user?.uid ? '10px' : '0',
+                          marginRight: message.senderId === user?.uid ? '0' : '10px',
+                        }}
+                        src={message.images}
+                      />
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No messages found.</p>
+            )}
+        </IonLabel>
+
+
             <IonInput placeholder='Your message'  onIonChange={(e:any)=> setContent(e.target.value)} onIonBlur={(e: any) => setContent(e.target.value)} ></IonInput>
             <IonCard>
               <IonItem>
