@@ -1,6 +1,7 @@
 import { Redirect, Route, RouteProps } from 'react-router-dom';
 import { IonApp, IonLoading, IonRouterOutlet, IonSplitPane, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
+import { images, square, triangle } from 'ionicons/icons';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -38,6 +39,7 @@ import { AuthProvider, useAuth } from './AuthContext';
 import UsersList from './pages/UsersList';
 import Messages from './pages/Messages';
 import Menu from './Menu';
+import Story from "./pages/Story";
 
 
 
@@ -81,6 +83,7 @@ const App: React.FC = () => (
           <Route exact path="/login" component={Login}></Route>
           <Route exact path="/register" component={Register}></Route>
           <Route exact path="/usersList" component={UsersList}></Route>
+          <Route exact path="/Story" component={Story}></Route>
           <Route exact path="/messages/:id" component={Messages}></Route>
           <PrivateRoute exact path="/profil" component={Profil}></PrivateRoute>
           <Route exact path="/">
