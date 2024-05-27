@@ -62,7 +62,20 @@ export async function sendMessage(content: string, senderId: string, receiverIds
       console.error("Error sending message:", error);
   }
 }
+export async function sendImage(ownerId: string, imageUrl: string) {
+    const imagesCollection = collection(firestore, 'images');
 
+    try {
+        await addDoc(imagesCollection, {
+            image: imageUrl,
+            owner: ownerId,
+            date: Timestamp.now(),
+        });
+        console.log("Message sent successfully!");
+    } catch (error) {
+        console.error("Error sending message:", error);
+    }
+}
 
 
 
