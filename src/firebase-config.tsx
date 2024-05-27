@@ -1,6 +1,7 @@
 import { FirebaseError, initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "firebase/auth";
 import { doc, getFirestore, setDoc } from 'firebase/firestore';
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAweURB0VIOiv4AevW0OJ1D94ASIS1w3Zc",
@@ -14,7 +15,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const firestore = getFirestore(app);
-
+export const storage = getStorage(app);
 
 
 

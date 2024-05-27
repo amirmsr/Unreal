@@ -20,6 +20,9 @@ const Profil: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
+          <IonButton slot='start'>
+            <IonMenuButton></IonMenuButton>
+          </IonButton>
           <IonTitle>Profil</IonTitle>
         </IonToolbar>
       </IonHeader>

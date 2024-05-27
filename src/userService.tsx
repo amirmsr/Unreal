@@ -1,5 +1,5 @@
 import { firestore } from './firebase-config';
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, orderBy, query, where } from 'firebase/firestore';
+import { Timestamp, addDoc, collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 
 export async function getUsers() {
   const usersCollection = collection(firestore, 'users');
@@ -35,21 +35,40 @@ export async function deleteUser(userId: string) {
 }
 
 
+export async function sendMessage(content: string, senderId: string, receiverIds: string[], imagesUrl?: string[]) {
+  const messagesCollection = collection(firestore, 'messages');
 
-export async function sendMessage(content: string, senderId: string, receiverIds: string[]) {
-    const messagesCollection = collection(firestore, 'messages');
+  try {
+      if(imagesUrl){
+          await addDoc(messagesCollection, {
+              content: content,
+              senderId: senderId,
+              receiverIds: receiverIds,
+              images : imagesUrl,
+              date: Timestamp.now(),
+          });
+      }
+      else {
+          await addDoc(messagesCollection, {
+              content: content,
+              senderId: senderId,
+              receiverIds: receiverIds,
+              date: Timestamp.now(),
+          });
 
-    try {
-        await addDoc(messagesCollection, {
-        content: content,
-        senderId: senderId,
-        receiverIds: receiverIds 
-        });
-        console.log("Message sent successfully!");
-    } catch (error) {
-        console.error("Error sending message:", error);
-    }
+      }
+      console.log("Message sent successfully!");
+  } catch (error) {
+      console.error("Error sending message:", error);
+  }
 }
+
+
+
+
+
+
+
 
 
 export async function getAllMessagesBetweenUsers(userId1: string, userId2: string) {
@@ -58,7 +77,8 @@ export async function getAllMessagesBetweenUsers(userId1: string, userId2: strin
   const messagesQuery = query(
     messagesCollection,
     where('senderId', '==', userId1),
-    where('receiverIds', 'array-contains', userId2)
+    where('receiverIds', 'array-contains', userId2),
+    
 
 
   );
@@ -91,3 +111,19 @@ export function listenToNewMessagesBetweenUsers(userId1: string, userId2: string
 }
 
 
+
+export async function getUserByMessage(senderId: string) {
+  try {
+    const userDocRef = doc(firestore, 'users', senderId);
+    const userDocSnap = await getDoc(userDocRef);
+
+    if (userDocSnap.exists()) {
+      return { id: userDocSnap.id, ...userDocSnap.data() };
+    } else {
+      throw new Error('User document does not exist');
+    }
+  } catch (error) {
+    console.error('Error fetching user by senderId:', error);
+    return null; 
+  }
+}

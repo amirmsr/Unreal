@@ -1,5 +1,5 @@
 import { Redirect, Route, RouteProps } from 'react-router-dom';
-import { IonApp, IonLoading, IonRouterOutlet, setupIonicReact } from '@ionic/react';
+import { IonApp, IonLoading, IonRouterOutlet, IonSplitPane, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 
 /* Core CSS required for Ionic components to work properly */
@@ -37,6 +37,7 @@ import Register from './pages/Register';
 import { AuthProvider, useAuth } from './AuthContext';
 import UsersList from './pages/UsersList';
 import Messages from './pages/Messages';
+import Menu from './Menu';
 
 
 
@@ -72,9 +73,11 @@ setupIonicReact();
 
 const App: React.FC = () => (
   <IonApp>
-    <AuthProvider>
-      <IonReactRouter>
-        <IonRouterOutlet>
+  <AuthProvider>
+    <IonReactRouter>
+      <IonSplitPane contentId="main">
+        <Menu />
+        <IonRouterOutlet id="main">
           <Route exact path="/login" component={Login}></Route>
           <Route exact path="/register" component={Register}></Route>
           <Route exact path="/usersList" component={UsersList}></Route>
@@ -84,9 +87,10 @@ const App: React.FC = () => (
             <Redirect to="/profil" />
           </Route>
         </IonRouterOutlet>
-      </IonReactRouter>
-    </AuthProvider>
-  </IonApp>
+      </IonSplitPane>
+    </IonReactRouter>
+  </AuthProvider>
+</IonApp>
 );
 
 export default App;

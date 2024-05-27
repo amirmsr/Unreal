@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonButton, IonIcon, IonCheckbox, IonInput, IonText, IonCard } from '@ionic/react';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonButton, IonIcon, IonCheckbox, IonInput, IonText, IonCard, IonMenuButton } from '@ionic/react';
 import { deleteUser, getUsers, sendMessage } from '../userService';
 import { useAuth } from '../AuthContext';
-import { chatbubbles, mailOutline, trash } from 'ionicons/icons';
+import { chatbubbles, mailOutline, notifications, trash } from 'ionicons/icons';
 import { useHistory } from 'react-router';
 
 interface User {
@@ -47,8 +47,9 @@ const UsersList: React.FC = () => {
   const handleSendMessage = async (content: string, senderId: string, receiverIds: string[]) => {
     try {
       await sendMessage(content, senderId, receiverIds);
-      console.log("Message sent successfully!");
+      alert('message sended')
     } catch (error) {
+      alert('Error')
       console.error("Error sending message:", error);
     }
   };
@@ -81,6 +82,9 @@ const UsersList: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
+          <IonButton slot='start'>
+            <IonMenuButton></IonMenuButton>
+          </IonButton>
           <IonTitle>Users</IonTitle>
         </IonToolbar>
       </IonHeader>
