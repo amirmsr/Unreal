@@ -21,7 +21,7 @@ export function usePhotoGallery() {
 
 
 
-    const takePhoto = async (ownerId:string) => {
+    const takePhoto = async (ownerId:string, ownerUsername:string) => {
         const photo = await Camera.getPhoto({
             resultType: CameraResultType.Uri,
             source: CameraSource.Camera,
@@ -38,9 +38,9 @@ export function usePhotoGallery() {
             ...photos,
         ];
         setPhotos(newPhotos);
-        uploadPhoto(ownerId, fileName, blobImage);
+        uploadPhoto(ownerId, fileName, blobImage, ownerUsername);
     };
-    const uploadPhoto = (ownerId: string, filename:string, blobImage:Blob) => {
+    const uploadPhoto = (ownerId: string, filename:string, blobImage:Blob, ownerUsername:string) => {
             const storageRef = ref(storage, `story/${filename}`);
             const uploadTask = uploadBytesResumable(storageRef, blobImage);
 
@@ -55,7 +55,7 @@ export function usePhotoGallery() {
                 },
                 () => {
                     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                        sendImage(ownerId, downloadURL);
+                        sendImage(ownerId, downloadURL, ownerUsername );
                         console.log('File available at', downloadURL);
 
                     });

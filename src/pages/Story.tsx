@@ -49,7 +49,7 @@ const Story: React.FC = () => {
             </IonHeader>
             <IonContent>
                 <IonFab vertical="bottom" horizontal="center" slot="fixed">
-                    <IonFabButton onClick={() => takePhoto(user!.uid)}>
+                    <IonFabButton onClick={() => takePhoto(user!.uid, userData!.username)}>
                         <IonIcon icon={camera}></IonIcon>
                     </IonFabButton>
                 </IonFab>

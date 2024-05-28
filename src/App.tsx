@@ -40,6 +40,7 @@ import UsersList from './pages/UsersList';
 import Messages from './pages/Messages';
 import Menu from './Menu';
 import Story from "./pages/Story";
+import StoryDiscovery from './pages/StoryDiscovery';
 
 
 
@@ -84,6 +85,7 @@ const App: React.FC = () => (
           <Route exact path="/register" component={Register}></Route>
           <Route exact path="/usersList" component={UsersList}></Route>
           <Route exact path="/Story" component={Story}></Route>
+          <Route exact path="/storydiscovery" component={StoryDiscovery}></Route>
           <Route exact path="/messages/:id" component={Messages}></Route>
           <PrivateRoute exact path="/profil" component={Profil}></PrivateRoute>
           <Route exact path="/">

@@ -1,5 +1,5 @@
 import { IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonIcon, IonLabel, IonPage, IonButtons, IonMenuButton, IonSplitPane, IonRouterOutlet, IonMenuToggle } from '@ionic/react';
-import { home, person, mail, personOutline } from 'ionicons/icons'; // Importez les icônes pour les éléments de menu
+import { home, person, mail, personOutline, cameraOutline, camera } from 'ionicons/icons'; // Importez les icônes pour les éléments de menu
 import { Redirect, Route } from 'react-router';
 import UsersList from './pages/UsersList';
 import Profile from './pages/profil';
@@ -8,7 +8,8 @@ import Profil from './pages/profil';
 const Menu: React.FC = () => {
     const path = [
         { name: 'My profil', url: '/profil',  icon: home },
-        { name: 'Users', url: '/usersList', icon: person }
+        { name: 'Users', url: '/usersList', icon: person },
+        { name: 'Add story', url: '/story', icon: camera }
     ];
 
     return (
