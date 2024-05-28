@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {
     IonContent,
@@ -20,6 +20,7 @@ import { useAuth } from '../AuthContext';
 import { usePhotoGallery } from '../usePhoto';
 import { logoutUser } from '../firebase-config';
 import { useHistory } from 'react-router-dom';
+import { Geolocation } from '@capacitor/geolocation';
 
 
 
@@ -29,12 +30,27 @@ const Story: React.FC = () => {
     const { user, userData } = useAuth();
     const history = useHistory();
     const { photos, takePhoto } = usePhotoGallery();
-
-    const handleLogout = async () => {
-        await logoutUser();
-        history.push('/login');
+    const [location, setLocation] = useState<{ lat: number, lon: number } | null>(null);
+    const getCurrentPosition = async () => {
+        const coordinates = await Geolocation.getCurrentPosition();
+        setLocation({
+            lat: coordinates.coords.latitude,
+            lon: coordinates.coords.longitude,
+        });
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${location?.lat}&lon=${location?.lon}&zoom=10&addressdetails=1`);
+        const data = await response.json();
+        if (data && data.address) {
+            console.log("vous êtes à ", data.address.city )
+            return data.address.city || data.address.town || data.address.village || null;
+        } else {
+            throw new Error('No results found or Geocoding API error');
+        }
+        console.log("aaaaaaaaaaa",response)
     };
 
+    useEffect(() => {
+        getCurrentPosition();
+    }, []);
 
 
     return (
@@ -54,6 +70,7 @@ const Story: React.FC = () => {
                     </IonFabButton>
                 </IonFab>
             </IonContent>
+            <IonContent><IonButton expand="block" onClick={getCurrentPosition}>Get location</IonButton></IonContent>
             <IonContent>
                 <IonGrid>
                     <IonRow>
@@ -71,3 +88,4 @@ const Story: React.FC = () => {
 };
 
 export default Story;
+ 

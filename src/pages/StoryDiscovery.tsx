@@ -1,6 +1,7 @@
-import { IonContent, IonHeader, IonImg, IonItem, IonLabel, IonList, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import React, { useEffect, useState } from 'react';
+import { IonButtons, IonCard, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonMenuButton, IonPage, IonRefresher, IonRefresherContent, IonText, IonTitle, IonToolbar } from '@ionic/react';
+import React, { useEffect, useRef, useState } from 'react';
 import { getStories, getUserById } from '../userService';
+import { heartOutline, refreshOutline } from 'ionicons/icons';
 
 interface Story {
     id: string;
@@ -22,28 +23,45 @@ const StoryDiscovery: React.FC = () => {
     
         fetchStories();
       }, []);
+      const refresherRef = useRef<HTMLIonRefresherElement>(null);
+      const doRefresh = async (event: CustomEvent) => {
+       
+        console.log('Refresh clicked');
+        setTimeout(() => {
+         
+          event.detail.complete();
+        }, 2000);
+      };
 
     return (
         <IonPage>
-            <IonHeader>
-                <IonToolbar>
-                    <IonTitle>All Stories</IonTitle>
-                </IonToolbar>
-            </IonHeader>
-            <IonContent className="ion-padding">
-                <IonList>
-                    {stories.map(story => (
-                        <IonLabel key={story.id}>
-                            <IonList>
-                                <IonTitle>Posted by {story.ownerUsername}</IonTitle>
-                                <IonImg src={story.image}></IonImg>
-                            </IonList>
-                        </IonLabel>
-                    ))}
-                </IonList>
-               
-            </IonContent>
-        </IonPage>
+      <IonHeader>
+        <IonToolbar color="primary">
+        <IonButtons slot='start'>
+          <IonMenuButton></IonMenuButton>
+        </IonButtons>
+          <IonTitle>All Stories</IonTitle>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent>
+        <IonRefresher slot="fixed" ref={refresherRef} onIonRefresh={doRefresh}>
+          <IonRefresherContent
+            pullingIcon={refreshOutline} 
+            refreshingSpinner="circles">
+          </IonRefresherContent>
+        </IonRefresher>
+        <IonList>
+          {stories.map(story => (
+            <IonCard key={story.id}>
+              <IonCardHeader>
+                <IonCardTitle>Posted by {story.ownerUsername}</IonCardTitle>
+              </IonCardHeader>
+              <IonImg src={story.image} />
+            </IonCard>
+          ))}
+        </IonList>
+      </IonContent>
+    </IonPage>
     );
 };
 
