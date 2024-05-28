@@ -5,12 +5,12 @@ import { doc, getFirestore, setDoc } from 'firebase/firestore';
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAweURB0VIOiv4AevW0OJ1D94ASIS1w3Zc",
-  authDomain: "movieapp-54292.firebaseapp.com",
-  projectId: "movieapp-54292",
-  storageBucket: "movieapp-54292.appspot.com",
-  messagingSenderId: "488949526413",
-  appId: "1:488949526413:web:9cf980667b36dc3e39d7c4"
+  apiKey: "AIzaSyBZRR81ro9GN6GbLjEtEMa6EPjg0pHd3HI",
+  authDomain: "unrealv2.firebaseapp.com",
+  projectId: "unrealv2",
+  storageBucket: "unrealv2.appspot.com",
+  messagingSenderId: "54814253890",
+  appId: "1:54814253890:web:f645babc991bfaa0541edb"
 };
 
 const app = initializeApp(firebaseConfig);

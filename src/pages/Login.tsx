@@ -23,6 +23,10 @@ const Login: React.FC = () => {
         setBusy(false);
     }
 
+    function handleRegister() {
+        navigation.push('/register', 'back', 'replace')
+    }
+
     return (
         <IonPage>
             <IonHeader>
@@ -40,6 +44,7 @@ const Login: React.FC = () => {
                     message={toastMessage}
                     onClose={() => setShowToast(false)}
                 />
+                <IonButton onClick={handleRegister}>Register</IonButton>
             </IonContent>
         </IonPage>
     );
