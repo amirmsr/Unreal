@@ -87,7 +87,7 @@ const App: React.FC = () => (
           <Route exact path="/messages/:id" component={Messages}></Route>
           <PrivateRoute exact path="/profil" component={Profil}></PrivateRoute>
           <Route exact path="/">
-            <Redirect to="/profil" />
+            <Redirect to="/login" />
           </Route>
         </IonRouterOutlet>
       </IonSplitPane>
