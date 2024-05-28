@@ -1,5 +1,6 @@
-import { FirebaseError, initializeApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "firebase/auth";
+import { Capacitor } from "@capacitor/core";
+import { initializeApp } from "firebase/app";
+import { browserLocalPersistence, createUserWithEmailAndPassword, getAuth, indexedDBLocalPersistence, initializeAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { doc, getFirestore, setDoc } from 'firebase/firestore';
 import { getStorage } from "firebase/storage";
 
@@ -12,28 +13,30 @@ const firebaseConfig = {
   appId: "1:54814253890:web:f645babc991bfaa0541edb"
 };
 
-
 const app = initializeApp(firebaseConfig);
 export const firestore = getFirestore(app);
 export const storage = getStorage(app);
 
+let persistence;
 
-
-
-export async function loginUser(mail:string, password: string) {
-
-    const auth = getAuth(app);
-
-    try {
-        const userCredential = await signInWithEmailAndPassword(auth, mail, password);
-        return userCredential.user;
-    } catch (error) {
-        console.log(error)
-        return false
-    }
-
+if (Capacitor.isNativePlatform()) {
+  persistence = indexedDBLocalPersistence;
+} else {
+  persistence = browserLocalPersistence;
 }
 
+initializeAuth(app, { persistence });
+
+export const auth = getAuth(app);
+
+export async function loginUser(mail:string, password: string) {
+  try {
+      const userCredential = await signInWithEmailAndPassword(auth, mail, password);
+      return userCredential.user;
+  } catch (error) {
+      return false;
+  }
+}
 
 export async function registerUser(email: string, password: string, username: string, age:number) {
     const auth = getAuth(app);

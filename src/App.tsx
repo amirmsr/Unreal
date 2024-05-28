@@ -1,7 +1,6 @@
-import { Redirect, Route, RouteProps } from 'react-router-dom';
 import { IonApp, IonLoading, IonRouterOutlet, IonSplitPane, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { images, square, triangle } from 'ionicons/icons';
+import { Redirect, Route, RouteProps } from 'react-router-dom';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -12,12 +11,12 @@ import '@ionic/react/css/structure.css';
 import '@ionic/react/css/typography.css';
 
 /* Optional CSS utils that can be commented out */
-import '@ionic/react/css/padding.css';
+import '@ionic/react/css/display.css';
+import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/float-elements.css';
+import '@ionic/react/css/padding.css';
 import '@ionic/react/css/text-alignment.css';
 import '@ionic/react/css/text-transformation.css';
-import '@ionic/react/css/flex-utils.css';
-import '@ionic/react/css/display.css';
 
 /**
  * Ionic Dark Mode
@@ -31,16 +30,16 @@ import '@ionic/react/css/display.css';
 import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
-import './theme/variables.css';
-import Login from './pages/Login';
-import Profil from './pages/profil';
-import Register from './pages/Register';
 import { AuthProvider, useAuth } from './AuthContext';
-import UsersList from './pages/UsersList';
-import Messages from './pages/Messages';
 import Menu from './Menu';
+import Login from './pages/Login';
+import Messages from './pages/Messages';
+import Register from './pages/Register';
 import Story from "./pages/Story";
 import StoryDiscovery from './pages/StoryDiscovery';
+import UsersList from './pages/UsersList';
+import Profil from './pages/profil';
+import './theme/variables.css';
 
 
 
@@ -89,7 +88,7 @@ const App: React.FC = () => (
           <Route exact path="/messages/:id" component={Messages}></Route>
           <PrivateRoute exact path="/profil" component={Profil}></PrivateRoute>
           <Route exact path="/">
-            <Redirect to="/profil" />
+            <Redirect to="/login" />
           </Route>
         </IonRouterOutlet>
       </IonSplitPane>

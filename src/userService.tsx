@@ -142,7 +142,6 @@ export async function sendImage(ownerId: string, imageUrl: string, ownerUsername
   }
 }
 
-
 interface Story {
   id: string;
   date: string;
@@ -159,5 +158,3 @@ export async function getStories(): Promise<Story[]> {
   const storyList = storySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Story));
   return storyList;
 }
- 
-
